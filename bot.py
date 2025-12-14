@@ -1,7 +1,7 @@
 # bot.py
-# Esse tekshiruvchi Telegram bot (matn asosida)
-# analysis.py + scoring.py bilan bog‘langan
+# Railway uchun moslangan Telegram esse tekshiruvchi bot
 
+import os
 import logging
 from telegram import Update
 from telegram.ext import (
@@ -15,9 +15,12 @@ from telegram.ext import (
 from analysis import EssayAnalyzer
 
 # =====================
-# SOZLAMALAR
+# SOZLAMALAR (Railway)
 # =====================
-TOKEN = "BOT_TOKEN_BU_YERGA_QO‘YILADI"
+TOKEN = os.getenv("BOT_TOKEN")
+
+if not TOKEN:
+    raise RuntimeError("BOT_TOKEN environment variable topilmadi!")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -25,7 +28,6 @@ logging.basicConfig(
 )
 
 analyzer = EssayAnalyzer()
-
 
 # =====================
 # /start
@@ -36,10 +38,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📌 Esseni *matn ko‘rinishida* yuboring.\n"
         "📌 Bot yozma ishni 12 band bo‘yicha baholaydi.\n"
         "📌 Natijada 24 va 75 ballik tizimda baho beradi.\n\n"
-        "❗ Hozircha rasm va ovoz qo‘llab-quvvatlanmaydi.",
+        "⚠️ Hozircha rasm va ovozli tahlil o‘chiq.",
         parse_mode="Markdown"
     )
-
 
 # =====================
 # ESSENI QABUL QILISH
@@ -53,12 +54,9 @@ async def handle_essay(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # So‘zlar soni
     word_count = len(text.split())
 
-    # ⚠️ HOZIRCHA MANUAL BAHOLASH
-    # Keyin AI/OCR qo‘shiladi
-    # Hozir test uchun O‘RTACHA ball beramiz
+    # ⚠️ Hozircha manual ball (keyin AI bilan almashtiramiz)
     band_scores = {
         1: 1.5,
         2: 1.5,
@@ -93,7 +91,6 @@ async def handle_essay(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg, parse_mode="Markdown")
         return
 
-    # To‘liq baholash
     msg = (
         "✅ *Esse tekshirildi*\n\n"
         f"🧮 So‘zlar soni: *{word_count}*\n"
@@ -111,7 +108,6 @@ async def handle_essay(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(msg, parse_mode="Markdown")
 
-
 # =====================
 # BOTNI ISHGA TUSHIRISH
 # =====================
@@ -121,7 +117,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_essay))
 
-    print("Bot ishga tushdi...")
+    logging.info("Bot Railway’da ishga tushdi")
     app.run_polling()
 
 
