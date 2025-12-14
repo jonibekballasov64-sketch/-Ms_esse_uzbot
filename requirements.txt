@@ -1,0 +1,10 @@
+python-telegram-bot==20.7
+
+# OCR (scanner + matn tanish)
+pytesseract
+opencv-python
+numpy
+Pillow
+
+# Ovozli tahlil (TTS)
+gTTS
