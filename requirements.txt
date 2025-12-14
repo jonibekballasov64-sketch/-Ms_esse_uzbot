@@ -1,8 +1,8 @@
 python-telegram-bot==20.7
 
 # OCR (scanner + matn tanish)
+opencv-python-headless
 pytesseract
-opencv-python
 numpy
 Pillow
 
