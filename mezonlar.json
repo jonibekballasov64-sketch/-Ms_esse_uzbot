@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "name": "Ona tili va adabiyot — yozma ish (esse) baholash mezonlari",
+    "max_total": 24,
+    "converted_total": 75
+  },
+
+  "global_rules": {
+    "zero_score": {
+      "description": "Quyidagi holatlarda yozma ish tekshirilmaydi va 0 ball bilan baholanadi",
+      "conditions": [
+        {
+          "id": "only_introduction",
+          "rule": "Faqat kirish qismi yozilgan bo‘lsa",
+          "result": 0
+        },
+        {
+          "id": "empty_work",
+          "rule": "Yozma ish yozilmagan yoki javoblar varaqasi bo‘sh bo‘lsa",
+          "result": 0
+        },
+        {
+          "id": "full_cyrillic",
+          "rule": "Yozma ish matni to‘liq kirill alifbosida yozilgan bo‘lsa",
+          "result": 0
+        }
+      ]
+    },
+
+    "two_score": {
+      "description": "Quyidagi holatlarda yozma ish 12 band bo‘yicha tekshirilmaydi va jami 2 ball bilan baholanadi",
+      "conditions": [
+        {
+          "id": "off_topic",
+          "rule": "Yozma ish mavzuga mos bo‘lmasa (lekin asosiy qism yoki xulosada vaziyatga mos kamida bitta jumla mavjud bo‘lsa)",
+          "result": 2
+        },
+        {
+          "id": "word_count_less_100",
+          "rule": "Yozma ish hajmi 100 ta so‘zdan kam bo‘lsa",
+          "result": 2
+        }
+      ]
+    }
+  },
+
+  "bands": [
+    {
+      "id": 1,
+      "name": "Publitsistik uslub",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Matn to‘liq publitsistik (ilmiy-ommabop) uslubda yozilgan" },
+        { "score": 1.5, "condition": "Matnning 1/3 qismigacha boshqa uslub unsurlari bor" },
+        { "score": 1, "condition": "Matnning yarmidan ko‘p qismi boshqa uslubda" },
+        { "score": 0.5, "condition": "Matn asosan badiiy yoki so‘zlashuv uslubida" },
+        { "score": 0, "condition": "Matn to‘liq so‘zlashuv uslubida" }
+      ]
+    },
+
+    {
+      "id": 2,
+      "name": "Ikki qarash va shaxsiy fikr",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Ikki qarash ham, shaxsiy fikr ham to‘liq yoritilgan" },
+        { "score": 1.5, "condition": "Ikki qarash bor, shaxsiy fikr yoritilmagan" },
+        { "score": 1, "condition": "Faqat bitta qarash to‘liq yoritilgan" },
+        { "score": 0.5, "condition": "Faqat bitta qarash yuzaki yoritilgan" },
+        { "score": 0, "condition": "Qarashlar yoritilmagan" }
+      ]
+    },
+
+    {
+      "id": 3,
+      "name": "Dalillash",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Har ikkala qarash dalillar bilan asoslangan" },
+        { "score": 1.5, "condition": "Faqat bitta qarash dalillangan" },
+        { "score": 1, "condition": "Dalillar bor, lekin ayrimlari vaziyatga mos emas" },
+        { "score": 0.5, "condition": "Dalillar juda zaif yoki umumiy" },
+        { "score": 0, "condition": "Dalillash umuman yo‘q" }
+      ]
+    },
+
+    {
+      "id": 4,
+      "name": "Kirish–asosiy qism–xulosa",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Kirish, asosiy qism va xulosa to‘liq yoritilgan" },
+        { "score": 1.5, "condition": "Uch qism mavjud, bittasi juda qisqa" },
+        { "score": 1, "condition": "Faqat ikki qism mavjud" },
+        { "score": 0.5, "condition": "Faqat bitta qism (kirishdan tashqari)" },
+        { "score": 0, "condition": "Faqat kirish qismi mavjud" }
+      ]
+    },
+
+    {
+      "id": 5,
+      "name": "Mantiqiy qurilish",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Mantiqiy qurilishda xatolik yo‘q" },
+        { "score": 1.5, "condition": "1–2 o‘rinda mantiqiy xato" },
+        { "score": 1, "condition": "3–4 o‘rinda mantiqiy xato" },
+        { "score": 0.5, "condition": "5–6 o‘rinda mantiqiy xato" },
+        { "score": 0, "condition": "7 va undan ortiq mantiqiy xato" }
+      ]
+    },
+
+    {
+      "id": 6,
+      "name": "Mantiqiy izchillik",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Fikrlar izchil, takror yo‘q" },
+        { "score": 1.5, "condition": "1–2 o‘rinda takror bor, izchillik saqlangan" },
+        { "score": 1, "condition": "3–4 o‘rinda takror, izchillik buzilgan" },
+        { "score": 0.5, "condition": "5–6 o‘rinda takror, izchillik buzilgan" },
+        { "score": 0, "condition": "7 va undan ortiq takror, izchillik yo‘q" }
+      ]
+    },
+
+    {
+      "id": 7,
+      "name": "Imlo xatolari",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Imlo xatosi yo‘q" },
+        { "score": 1.5, "condition": "1–2 ta imlo xatosi" },
+        { "score": 1, "condition": "3–4 ta imlo xatosi" },
+        { "score": 0.5, "condition": "5–6 ta imlo xatosi" },
+        { "score": 0, "condition": "7 va undan ortiq imlo xatosi" }
+      ]
+    },
+
+    {
+      "id": 8,
+      "name": "Punktuatsiya",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Punktuatsion xato yo‘q" },
+        { "score": 1.5, "condition": "1–2 ta punktuatsion xato" },
+        { "score": 1, "condition": "3–4 ta punktuatsion xato" },
+        { "score": 0.5, "condition": "5–6 ta punktuatsion xato" },
+        { "score": 0, "condition": "7 va undan ortiq punktuatsion xato" }
+      ]
+    },
+
+    {
+      "id": 9,
+      "name": "Qo‘shimchalar uslubiyati",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Qo‘shimchalar to‘g‘ri va o‘rinli" },
+        { "score": 1.5, "condition": "1–2 o‘rinda noo‘rin qo‘llangan" },
+        { "score": 1, "condition": "3–4 o‘rinda xato" },
+        { "score": 0.5, "condition": "5–6 o‘rinda xato" },
+        { "score": 0, "condition": "7 va undan ortiq xato" }
+      ]
+    },
+
+    {
+      "id": 10,
+      "name": "So‘z qo‘llash uslubiyati",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "So‘z qo‘llashda uslubiy xato yo‘q" },
+        { "score": 1.5, "condition": "1–2 ta uslubiy xato" },
+        { "score": 1, "condition": "3–4 ta uslubiy xato" },
+        { "score": 0.5, "condition": "5–6 ta uslubiy xato" },
+        { "score": 0, "condition": "7 va undan ortiq uslubiy xato" }
+      ]
+    },
+
+    {
+      "id": 11,
+      "name": "Leksik boylik",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Leksik xilma-xillik yuqori" },
+        { "score": 1.5, "condition": "Leksik xilma-xillik yetarli" },
+        { "score": 1, "condition": "So‘zlar takrorlangan" },
+        { "score": 0.5, "condition": "Leksik boylik juda kam" },
+        { "score": 0, "condition": "Leksik xilma-xillik yo‘q" }
+      ]
+    },
+
+    {
+      "id": 12,
+      "name": "Noo‘rin birliklar",
+      "max_score": 2,
+      "levels": [
+        { "score": 2, "condition": "Sheva, vulgarizm, varvarizm yo‘q" },
+        { "score": 1.5, "condition": "1–2 ta noo‘rin birlik" },
+        { "score": 1, "condition": "3–4 ta noo‘rin birlik" },
+        { "score": 0.5, "condition": "5–6 ta noo‘rin birlik" },
+        { "score": 0, "condition": "7 va undan ortiq noo‘rin birlik" }
+      ]
+    }
+  ],
+
+  "calculation_notes": {
+    "rule_order": [
+      "Avval global qoidalar tekshiriladi (0 ball / jami 2 ball)",
+      "Agar global qoida tushmasa, 12 band bo‘yicha baholanadi",
+      "Jami 24 ball hisoblanadi",
+      "24 ball 75 ballik tizimga konvertatsiya qilinadi"
+    ]
+  }
+}
