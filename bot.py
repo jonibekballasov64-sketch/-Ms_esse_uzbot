@@ -24,7 +24,9 @@ from tts import text_to_speech   # 🔊 OVOZ QO‘SHILDI
 # =====================
 # SOZLAMALAR
 # =====================
-TOKEN = os.getenv("BOT_TOKEN", "PUT_TOKEN_HERE")
+import os
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
