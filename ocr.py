@@ -1,5 +1,5 @@
 # ocr.py
-# Rasmni SKANER rejimida tozalab, matn chiqarish
+# Rasmni skaner rejimida tozalab, matn chiqarish (OPTIMALLASHTIRILGAN)
 
 import cv2
 import pytesseract
@@ -18,20 +18,20 @@ def scan_preprocess(image_path: str):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Shovqinni kamaytirish
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    # Shovqinni kamaytirish (yumshoqroq)
+    gray = cv2.GaussianBlur(gray, (3, 3), 0)
 
-    # Adaptive threshold (scanner effekti)
+    # Adaptive threshold (scanner effekti, lekin haddan oshmagan)
     thresh = cv2.adaptiveThreshold(
         gray,
         255,
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.ADAPTIVE_THRESH_MEAN_C,
         cv2.THRESH_BINARY,
-        31,
-        10
+        25,
+        12
     )
 
-    # Kichik dog‘larni yo‘qotish
+    # Mayda shovqinlarni tozalash
     kernel = np.ones((1, 1), np.uint8)
     cleaned = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 
@@ -50,6 +50,7 @@ def clean_text(text: str) -> str:
 def image_to_text(image_path: str) -> str | None:
     """
     Rasm → (scanner) → OCR → matn
+    Yomon natijada None qaytaradi
     """
     processed = scan_preprocess(image_path)
 
@@ -58,13 +59,13 @@ def image_to_text(image_path: str) -> str | None:
 
     raw_text = pytesseract.image_to_string(
         processed,
-        lang="eng",
-        config="--oem 3 --psm 6"
+        lang="eng",  # lotin yozuvi uchun eng barqaror
+        config="--oem 3 --psm 4"
     )
 
     text = clean_text(raw_text)
 
-    # Juda yomon OCR bo‘lsa rad qilamiz
+    # Juda qisqa yoki yaroqsiz OCR bo‘lsa
     if len(text.split()) < 20:
         return None
 
