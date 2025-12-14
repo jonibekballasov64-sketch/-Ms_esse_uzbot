@@ -1,8 +1,10 @@
 # analysis.py
 # Esse (yozma ish)ni 12 band bo‘yicha izohli tahlil qilish
+# Global qoidalar + 24 -> 75 ball konvertatsiyasi bilan
 
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
+from scoring import convert_24_to_75
 
 
 class EssayAnalyzer:
@@ -13,16 +15,16 @@ class EssayAnalyzer:
         self.bands = self.mezonlar["bands"]
         self.global_rules = self.mezonlar["global_rules"]
 
-    # ---------------------------
+    # ===========================
     # GLOBAL QOIDALAR
-    # ---------------------------
+    # ===========================
     def check_global_rules(self, essay_text: str, word_count: int) -> Dict[str, Any]:
         """
         0 ball yoki jami 2 ball holatlarini tekshiradi
         """
         text = essay_text.strip()
 
-        # 0 ball holatlari
+        # --- 0 BALL HOLATLARI ---
         if not text:
             return {
                 "type": "zero",
@@ -30,7 +32,6 @@ class EssayAnalyzer:
                 "reason": "Yozma ish yozilmagan (bo‘sh)."
             }
 
-        # faqat kirish qismi (juda qisqa matn)
         if word_count < 30:
             return {
                 "type": "zero",
@@ -38,7 +39,7 @@ class EssayAnalyzer:
                 "reason": "Faqat kirish qismi yozilgan, topshiriq bajarilmagan."
             }
 
-        # to‘liq kirill alifbosi (sodda tekshiruv)
+        # To‘liq kirill alifbosi tekshiruvi
         latin_letters = sum(ch.isascii() and ch.isalpha() for ch in text)
         cyrillic_letters = sum("А" <= ch <= "я" for ch in text)
 
@@ -49,7 +50,7 @@ class EssayAnalyzer:
                 "reason": "Yozma ish to‘liq kirill alifbosida yozilgan."
             }
 
-        # jami 2 ball holatlari
+        # --- JAMI 2 BALL HOLATLARI ---
         if word_count < 100:
             return {
                 "type": "two",
@@ -57,15 +58,15 @@ class EssayAnalyzer:
                 "reason": "Yozma ish hajmi 100 ta so‘zdan kam."
             }
 
-        # mavzuga mos emas (hozircha manual flag)
+        # Agar hech biri tushmasa
         return {"type": "ok"}
 
-    # ---------------------------
+    # ===========================
     # BANDMA-BAND TAHLIL
-    # ---------------------------
+    # ===========================
     def analyze_bands(self, band_scores: Dict[int, float]) -> Dict[str, Any]:
         """
-        band_scores:
+        band_scores misol:
         {
             1: 1.5,
             2: 2,
@@ -84,8 +85,7 @@ class EssayAnalyzer:
             score = band_scores.get(band_id, 0)
             score = min(score, max_score)
 
-            # mos izohni topish
-            explanation = ""
+            explanation = "Izoh belgilanmagan."
             for lvl in band["levels"]:
                 if lvl["score"] == score:
                     explanation = lvl["condition"]
@@ -96,7 +96,7 @@ class EssayAnalyzer:
                 "band_name": band_name,
                 "score": score,
                 "max_score": max_score,
-                "explanation": explanation or "Izoh belgilanmagan."
+                "explanation": explanation
             })
 
             total_score += score
@@ -106,9 +106,9 @@ class EssayAnalyzer:
             "total_24": round(total_score, 1)
         }
 
-    # ---------------------------
-    # ASOSIY FUNKSIYA
-    # ---------------------------
+    # ===========================
+    # ASOSIY TAHLIL
+    # ===========================
     def analyze(
         self,
         essay_text: str,
@@ -116,26 +116,34 @@ class EssayAnalyzer:
         band_scores: Dict[int, float]
     ) -> Dict[str, Any]:
         """
-        Yakuniy tahlil
+        Yakuniy natija
         """
         global_check = self.check_global_rules(essay_text, word_count)
 
-        # 0 ball yoki 2 ball holati
+        # --- GLOBAL HOLATLAR ---
         if global_check["type"] in ("zero", "two"):
+            total_24 = global_check["score"]
+            total_75 = convert_24_to_75(total_24)
+
             return {
                 "status": "finished",
                 "mode": global_check["type"],
-                "total_24": global_check["score"],
+                "total_24": total_24,
+                "total_75": total_75,
                 "reason": global_check["reason"],
                 "bands": []
             }
 
-        # Aks holda 12 band bo‘yicha
+        # --- 12 BAND BO‘YICHA ---
         band_result = self.analyze_bands(band_scores)
+
+        total_24 = band_result["total_24"]
+        total_75 = convert_24_to_75(total_24)
 
         return {
             "status": "finished",
             "mode": "full",
-            "total_24": band_result["total_24"],
+            "total_24": total_24,
+            "total_75": total_75,
             "bands": band_result["bands"]
-      }
+                }
